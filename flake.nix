@@ -28,6 +28,8 @@
               ];
             };
             nativeBuildInputs = [ pkgs.zola ];
+            # Zola builds an HTTP client at startup and panics on Linux without CA certificates.
+            SSL_CERT_FILE = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
             buildPhase = "zola build --output-dir $out";
             dontInstall = true;
           };
