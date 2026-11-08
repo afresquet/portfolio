@@ -1,0 +1,10 @@
+base_url = "https://afresquet.com"
+title = "Alvaro Fresquet"
+description = "Senior software engineer in Barcelona. Rust, backend and embedded."
+default_language = "en"
+compile_sass = false
+build_search_index = false
+generate_feeds = false
+
+[markdown]
+smart_punctuation = true

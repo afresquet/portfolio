@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block body %}
+<header class="top">
+  <h1>{{ section.title }}</h1>
+  <p class="tagline">{{ config.description }}</p>
+  <p class="links">{% for l in section.extra.links %}<a href="{{ l.url }}">{{ l.label }}</a>{% if not loop.last %}<span class="sep"> · </span>{% endif %}{% endfor %}</p>
+</header>
+
+<main>
+  <section id="about">
+    {{ section.content | safe }}
+  </section>
+
+  <section id="work">
+    <h2><a href="#work">work</a></h2>
+    <ol class="work">
+      {% for job in section.extra.work %}
+      <li>
+        <span class="when">{{ job.when }}</span>
+        <div class="what">
+          <h3>{{ job.title }} <span class="org">· {{ job.org }}</span></h3>
+          {% if job.note %}<p class="note">{{ job.note | markdown(inline=true) | safe }}</p>{% endif %}
+          {{ job.body | markdown | safe }}
+        </div>
+      </li>
+      {% endfor %}
+    </ol>
+  </section>
+
+  <section id="projects">
+    <h2><a href="#projects">projects</a></h2>
+    <ul class="projects">
+      {% for p in section.extra.projects %}
+      <li>
+        <h3><a href="{{ p.url }}">{{ p.name }}</a>{% if p.meta %} <span class="meta">{{ p.meta }}</span>{% endif %}</h3>
+        {{ p.body | markdown | safe }}
+      </li>
+      {% endfor %}
+    </ul>
+  </section>
+
+  <section id="skills">
+    <h2><a href="#skills">skills</a></h2>
+    <dl class="skills">
+      {% for s in section.extra.skills %}
+      <dt>{{ s.group }}</dt>
+      <dd>{{ s.items }}</dd>
+      {% endfor %}
+    </dl>
+  </section>
+</main>
+{% endblock %}
