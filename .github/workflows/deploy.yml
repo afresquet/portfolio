@@ -1,0 +1,35 @@
+name: Deploy
+
+on:
+  push:
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: cachix/install-nix-action@v31
+
+      # The flake's package: Zola pinned by flake.lock, same as the dev shell.
+      - name: Build
+        id: build
+        run: |
+          out=$(nix build --print-out-paths)
+          echo "out=$out" >> "$GITHUB_OUTPUT"
+
+      # main deploys to production, any other branch to a preview URL.
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy ${{ steps.build.outputs.out }} --project-name=afresquet --branch=${{ github.ref_name }}
